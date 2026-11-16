@@ -61,6 +61,38 @@ Depois rode `cypher/02b_carga_kaggle.cypher` no lugar de `02_carga.cypher`.
 
 > Adicione os prints das visualizações de cada query.
 
+## Análise exploratória → decisões do modelo
+Queries em `cypher/04_exploracao.cypher`, rodadas sobre a amostra Kaggle (4.570 usuários, 50.683 músicas, 174.624 escutas).
+
+| Achado | Evidência | Decisão |
+|---|---|---|
+| Matriz muito esparsa | densidade de 0,075%, com 38 músicas por usuário (E1) | Modelo **híbrido**: colaborativa sozinha não basta |
+| Pouco histórico por usuário | 49% dos usuários têm de 20 a 29 músicas (E2) | Colaborativa com mais peso só a partir de cerca de 30 músicas |
+| Cold start de itens | 65% das músicas não têm ouvintes (E3) | Essas músicas só entram via **conteúdo** (tags + áudio) |
+| Feedback implícito assimétrico | mediana de 1 execução, p90 de 5, máximo de 420 (E4) | Peso `log(1 + vezes)`; "curtiu" = p90 (5+) |
+| Gênero cobre pouco | 44% das músicas têm gênero, 77% têm tag, 100% têm áudio (E5) | Conteúdo baseado em **tags + vetor de áudio**, gênero como apoio |
+| Viés de popularidade | Rock alcança 98% dos usuários e é dominante para 70% (E6, E7) | **Penalizar popularidade** no ranking |
+| Perfis distintos | 2.159 mistos, 2.047 especialistas, 364 ecléticos (E8) | Pesos diferentes por perfil (abaixo) |
+| Ninguém ouve tudo | máximo de 10 dos 15 gêneros; a maioria ouve de 3 a 5 (E9) | Espaço para descoberta controlada |
+| Co-escuta contaminada pelo Rock | os 6 maiores pares de gêneros envolvem Rock (E10) | Medir afinidade com **lift/Jaccard**, não com contagem bruta |
+| Áudio separa os extremos | Metal/Punk com energia de 0,85, New Age com 0,39; BPM quase constante (E11) | Vetor de áudio útil sem BPM; nos gêneros mainstream, combinar com tags |
+
+### Arquitetura proposta (híbrida)
+1. **Geração de candidatos**
+   - Colaborativa item-item (co-escuta ponderada por `log(1+vezes)`)
+   - Conteúdo: similaridade de tags + cosseno do vetor `audio`
+   - Popularidade (só para usuários novos)
+2. **Ranking**: `score = a·colaborativa + b·conteúdo − c·log(ouvintes) + d·diversidade`
+3. **Pesos por perfil**
+   | Perfil | Estratégia |
+   |---|---|
+   | Especialista (70% ou mais em um gênero) | conteúdo alto, dentro do gênero |
+   | Misto | colaborativa e conteúdo equilibrados |
+   | Eclético | colaborativa + descoberta via gêneros afins (lift) |
+   | Novo (menos de 20 músicas) | popularidade penalizada + conteúdo |
+4. **Avaliação**: holdout de 20% das escutas de cada usuário. Métricas: Precision@10, Recall@10, **cobertura do catálogo** e **novidade**, para medir se o viés do Rock foi contido.
+5. **Próximo passo (Desktop + GDS)**: embeddings FastRP + KNN para substituir as similaridades manuais.
+
 ## Neo4j × TypeDB: o que muda na modelagem
 | | Neo4j | TypeDB |
 |---|---|---|
