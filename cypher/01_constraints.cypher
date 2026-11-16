@@ -4,3 +4,4 @@ CREATE CONSTRAINT musica_id   IF NOT EXISTS FOR (m:Musica)  REQUIRE m.track_id I
 CREATE CONSTRAINT artista_nome IF NOT EXISTS FOR (a:Artista) REQUIRE a.nome IS UNIQUE;
 CREATE CONSTRAINT genero_nome IF NOT EXISTS FOR (g:Genero)  REQUIRE g.nome IS UNIQUE;
 CREATE INDEX musica_nome IF NOT EXISTS FOR (m:Musica) ON (m.nome);
+CREATE CONSTRAINT tag_nome    IF NOT EXISTS FOR (t:Tag)     REQUIRE t.nome IS UNIQUE;

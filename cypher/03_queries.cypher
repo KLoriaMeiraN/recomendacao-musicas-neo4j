@@ -25,7 +25,7 @@ MATCH (eu:Usuario {id: $usuario})-[:OUVIU]->(m:Musica)<-[:OUVIU]-(outro:Usuario)
 WITH eu, outro, count(m) AS comum
 MATCH (eu)-[:OUVIU]->(m1) WITH eu, outro, comum, count(m1) AS n1
 MATCH (outro)-[:OUVIU]->(m2) WITH outro, comum, n1, count(m2) AS n2
-RETURN outro.nome AS usuario, comum, round(toFloat(comum) / (n1 + n2 - comum), 2) AS jaccard
+RETURN outro.id AS usuario, comum, round(toFloat(comum) / (n1 + n2 - comum), 2) AS jaccard
 ORDER BY jaccard DESC LIMIT 5;
 
 // Q5. Cold start (usuário novo): mais ouvidas e mais curtidas
@@ -35,6 +35,13 @@ WITH m, coalesce(sum(o.vezes), 0) AS execucoes
 OPTIONAL MATCH (m)<-[c:CURTIU]-()
 RETURN m.nome AS musica, execucoes, count(c) AS curtidas
 ORDER BY curtidas DESC, execucoes DESC LIMIT 10;
+
+// Q5b. (base Kaggle) Músicas com "som parecido": similaridade de cosseno dos atributos de áudio
+// :param musica => 'Mr. Brightside'
+MATCH (m:Musica {nome: $musica})-[:INTERPRETADA_POR]->(a:Artista)
+MATCH (o:Musica)-[:INTERPRETADA_POR]->(b:Artista) WHERE b <> a
+RETURN o.nome AS musica, b.nome AS artista, round(vector.similarity.cosine(m.audio, o.audio), 3) AS similaridade
+ORDER BY similaridade DESC LIMIT 10;
 
 // ---------- GDS (somente se a instância tiver Graph Data Science) ----------
 // Projeção não direcionada Usuario—Musica com peso
@@ -46,7 +53,7 @@ CALL gds.nodeSimilarity.stream('musicas', {relationshipWeightProperty: 'vezes'})
 YIELD node1, node2, similarity
 WITH gds.util.asNode(node1) AS a, gds.util.asNode(node2) AS b, similarity
 WHERE a:Usuario AND a.id = $usuario
-RETURN b.nome AS similar, round(similarity, 3) AS sim ORDER BY sim DESC LIMIT 5;
+RETURN b.id AS similar, round(similarity, 3) AS sim ORDER BY sim DESC LIMIT 5;
 
 // Q7. PageRank: músicas mais "centrais" na rede de escuta
 CALL gds.pageRank.stream('musicas', {relationshipWeightProperty: 'vezes'})
@@ -59,7 +66,7 @@ CALL gds.louvain.stream('musicas', {relationshipWeightProperty: 'vezes'})
 YIELD nodeId, communityId
 WITH communityId, gds.util.asNode(nodeId) AS n
 RETURN communityId,
-  [x IN collect(n) WHERE x:Usuario | x.nome] AS usuarios,
+  [x IN collect(n) WHERE x:Usuario | x.id] AS usuarios,
   [x IN collect(n) WHERE x:Musica | x.nome][..5] AS amostra_musicas
 ORDER BY size(usuarios) DESC;
 
