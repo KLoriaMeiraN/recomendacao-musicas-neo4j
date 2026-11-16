@@ -1,0 +1,37 @@
+track_id,nome,artista,generos,ano
+TRK0001,Mr. Brightside,The Killers,rock;indie,2004
+TRK0002,Somebody Told Me,The Killers,rock;indie,2004
+TRK0003,Wonderwall,Oasis,rock;britpop,1995
+TRK0004,Don't Look Back in Anger,Oasis,rock;britpop,1995
+TRK0005,Come as You Are,Nirvana,rock;grunge,1991
+TRK0006,Smells Like Teen Spirit,Nirvana,rock;grunge,1991
+TRK0007,Yellow,Coldplay,rock;pop,2000
+TRK0008,Viva la Vida,Coldplay,pop;rock,2008
+TRK0009,Do I Wanna Know?,Arctic Monkeys,rock;indie,2013
+TRK0010,505,Arctic Monkeys,indie;rock,2007
+TRK0011,Blinding Lights,The Weeknd,pop;eletronica,2019
+TRK0012,Save Your Tears,The Weeknd,pop,2020
+TRK0013,Levitating,Dua Lipa,pop;eletronica,2020
+TRK0014,Don't Start Now,Dua Lipa,pop,2019
+TRK0015,Get Lucky,Daft Punk,eletronica;funk,2013
+TRK0016,One More Time,Daft Punk,eletronica,2000
+TRK0017,Midnight City,M83,eletronica;indie,2011
+TRK0018,Wake Me Up,Avicii,eletronica;pop,2013
+TRK0019,Águas de Março,Elis Regina,mpb;bossa nova,1974
+TRK0020,Como Nossos Pais,Elis Regina,mpb,1976
+TRK0021,Garota de Ipanema,Tom Jobim,bossa nova;jazz,1962
+TRK0022,Wave,Tom Jobim,bossa nova;jazz,1967
+TRK0023,Construção,Chico Buarque,mpb,1971
+TRK0024,Cálice,Chico Buarque,mpb,1978
+TRK0025,Andar com Fé,Gilberto Gil,mpb,1982
+TRK0026,Aquele Abraço,Gilberto Gil,mpb;samba,1969
+TRK0027,Lose Yourself,Eminem,hip-hop,2002
+TRK0028,Without Me,Eminem,hip-hop,2002
+TRK0029,HUMBLE.,Kendrick Lamar,hip-hop,2017
+TRK0030,DNA.,Kendrick Lamar,hip-hop,2017
+TRK0031,Negro Drama,Racionais MC's,hip-hop;rap nacional,2002
+TRK0032,Diário de um Detento,Racionais MC's,hip-hop;rap nacional,1997
+TRK0033,So What,Miles Davis,jazz,1959
+TRK0034,Blue in Green,Miles Davis,jazz,1959
+TRK0035,Take Five,Dave Brubeck,jazz,1959
+TRK0036,Fly Me to the Moon,Frank Sinatra,jazz;pop,1964
